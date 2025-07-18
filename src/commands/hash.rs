@@ -8,8 +8,8 @@ use std::collections::HashMap;
 
 #[derive(Args)]
 pub struct HashCommand {
-    /// Hash algorithm(s)
-    #[arg(short, long, value_delimiter = ',')]
+    /// Hash algorithm(s) - defaults to keccak256
+    #[arg(short, long, value_delimiter = ',', default_value = "keccak256")]
     pub algo: Vec<String>,
     /// Input encoding(s) - if not specified, will auto-classify
     #[arg(short, long, value_delimiter = ',')]
