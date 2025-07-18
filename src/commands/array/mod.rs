@@ -1,14 +1,14 @@
-use crate::types::CliResult;
 use crate::commands::SubCommand;
+use crate::types::CliResult;
 use clap::{Args, Subcommand};
 
-pub mod flatten;
 pub mod chunk;
+pub mod flatten;
 pub mod reverse;
 pub mod rotate;
 
-use flatten::FlattenCommand;
 use chunk::ChunkCommand;
+use flatten::FlattenCommand;
 use reverse::ReverseCommand;
 use rotate::RotateCommand;
 

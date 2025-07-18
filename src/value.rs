@@ -126,11 +126,7 @@ impl<T: Into<Value>> From<Vec<T>> for Value {
 
 impl<K: Into<Value>, V: Into<Value>> From<HashMap<K, V>> for Value {
     fn from(m: HashMap<K, V>) -> Self {
-        Value::Map(
-            m.into_iter()
-                .map(|(k, v)| (k.into(), v.into()))
-                .collect(),
-        )
+        Value::Map(m.into_iter().map(|(k, v)| (k.into(), v.into())).collect())
     }
 }
 

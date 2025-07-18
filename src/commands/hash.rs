@@ -1,10 +1,10 @@
-use crate::types::{CliResult, HashResponse, HashResult, Response};
 use crate::client::Client;
 use crate::commands::SubCommand;
 use crate::encode::encoding::Encoding;
 use crate::error::Error;
-use std::collections::HashMap;
+use crate::types::{CliResult, HashResponse, HashResult, Response};
 use clap::Args;
+use std::collections::HashMap;
 
 #[derive(Args)]
 pub struct HashCommand {
@@ -26,7 +26,7 @@ impl SubCommand for HashCommand {
         }
         let input = self.input.join(" ");
         let client = Client::new();
-        
+
         // Determine input encodings
         let encodings = match &self.input_encoding {
             Some(encodings) => encodings.clone(),
@@ -41,12 +41,13 @@ impl SubCommand for HashCommand {
                     .collect()
             }
         };
-        
+
         if !list_mode && self.algo.len() == 1 {
             // Single algorithm, non-list mode: return just the hash using best encoding
             let algo_name = &self.algo[0];
             let encoding = &encodings[0]; // Use the best encoding (first in sorted list)
-            client.hash(algo_name, &input, Encoding::from(encoding))
+            client
+                .hash(algo_name, &input, Encoding::from(encoding))
                 .map(|hash| hash.to_string())
                 .into()
         } else {
@@ -54,7 +55,8 @@ impl SubCommand for HashCommand {
             let results = encodings
                 .iter()
                 .flat_map(|encoding| {
-                    let values = self.algo
+                    let values = self
+                        .algo
                         .iter()
                         .flat_map(|algo| {
                             client

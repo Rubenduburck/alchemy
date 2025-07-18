@@ -1,4 +1,5 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 use alchemy::{client::Client, encode::encoding::Encoding};
 
@@ -122,7 +123,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // String handling benchmarks to test Cow<str> optimizations
     const TEST_MIXED_CASE: &str = "0xAbCdEf123456";
     const TEST_LOWERCASE: &str = "0xabcdef123456";
-    
+
     c.bench_function("convert_mixed_case_hex", |b| {
         b.iter(|| {
             let input_enc = black_box(Encoding::from("HEX")); // Uppercase to test Cow
@@ -141,7 +142,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     // Padding operation benchmarks to test our optimizations
     const LARGE_BYTE_ARRAY: &str = "[0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20]";
-    
+
     c.bench_function("convert_large_byte_array", |b| {
         b.iter(|| {
             let input_enc = black_box(Encoding::from("bytes"));
@@ -152,7 +153,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     // Nested array benchmark to test flatten_values optimization
     const NESTED_ARRAY: &str = "[[0x01, 0x02], [0x03, 0x04], [0x05, 0x06]]";
-    
+
     c.bench_function("convert_nested_array", |b| {
         b.iter(|| {
             let input_enc = black_box(Encoding::from("bytes"));
@@ -164,7 +165,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // Benchmark small conversions to test overhead
     const SMALL_HEX: &str = "0xff";
     const SMALL_INT: &str = "255";
-    
+
     c.bench_function("convert_small_hex_to_int", |b| {
         b.iter(|| {
             let input_enc = black_box(Encoding::from("hex"));

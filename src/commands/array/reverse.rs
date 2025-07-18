@@ -1,7 +1,8 @@
-use crate::types::CliResult;
+#![allow(clippy::uninlined_format_args)]
 use crate::client::Client;
 use crate::commands::SubCommand;
 use crate::error::Error;
+use crate::types::CliResult;
 use clap::Args;
 use std::io::{self, Read};
 
@@ -22,12 +23,14 @@ impl SubCommand for ReverseCommand {
             let mut buffer = String::new();
             match io::stdin().read_to_string(&mut buffer) {
                 Ok(_) => buffer.trim().to_string(),
-                Err(e) => return Error::Generic(format!("Failed to read from stdin: {}", e)).into(),
+                Err(e) => {
+                    return Error::Generic(format!("Failed to read from stdin: {}", e)).into()
+                }
             }
         } else {
             self.input.join(" ")
         };
-        
+
         if input.is_empty() {
             return Error::MissingArgs("No input provided".to_string()).into();
         }

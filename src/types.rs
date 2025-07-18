@@ -1,6 +1,7 @@
+#![allow(clippy::uninlined_format_args)]
+use crate::error::Error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::error::Error;
 
 pub struct CliResult(pub Result<Response, Error>);
 
@@ -57,7 +58,9 @@ impl From<Vec<ClassificationResult>> for CliResult {
 
 impl From<Vec<EncodingWithDecodings>> for CliResult {
     fn from(encodings: Vec<EncodingWithDecodings>) -> Self {
-        CliResult(Ok(Response::Conversions(ConversionResponse::Full { encodings })))
+        CliResult(Ok(Response::Conversions(ConversionResponse::Full {
+            encodings,
+        })))
     }
 }
 
@@ -69,7 +72,9 @@ impl From<HashMap<String, Vec<String>>> for CliResult {
 
 impl From<HashMap<String, HashMap<String, ConversionResult>>> for CliResult {
     fn from(conversions: HashMap<String, HashMap<String, ConversionResult>>) -> Self {
-        CliResult(Ok(Response::Conversions(ConversionResponse::Regular(conversions))))
+        CliResult(Ok(Response::Conversions(ConversionResponse::Regular(
+            conversions,
+        ))))
     }
 }
 
@@ -192,7 +197,6 @@ impl From<serde_json::Value> for Response {
         Response::Json(value)
     }
 }
-
 
 pub trait ToResponse {
     fn to_response(self) -> Response;

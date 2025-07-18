@@ -11,4 +11,3 @@ use crate::types::CliResult;
 pub trait SubCommand {
     fn run(&self, list_mode: bool) -> CliResult;
 }
-

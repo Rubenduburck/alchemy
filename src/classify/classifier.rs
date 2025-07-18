@@ -421,15 +421,18 @@ mod tests {
         const BYTES_VALUE: &str = "[0x01, 0x02, 0x03]";
         let enc = Encoding::from("bytes");
         let result = cl.classify_with(&enc, BYTES_VALUE);
-        assert_eq!(result, Classification::Array(Array::new(
-            vec![
-                vec![Classification::Integer(Integer::new(16, "1", 0))],
-                vec![Classification::Integer(Integer::new(16, "2", 0))],
-                vec![Classification::Integer(Integer::new(16, "3", 0))],
-            ],
-            &Brackets::from('['),
-            Separator::from(','),
-            0
-        )));
+        assert_eq!(
+            result,
+            Classification::Array(Array::new(
+                vec![
+                    vec![Classification::Integer(Integer::new(16, "1", 0))],
+                    vec![Classification::Integer(Integer::new(16, "2", 0))],
+                    vec![Classification::Integer(Integer::new(16, "3", 0))],
+                ],
+                &Brackets::from('['),
+                Separator::from(','),
+                0
+            ))
+        );
     }
 }

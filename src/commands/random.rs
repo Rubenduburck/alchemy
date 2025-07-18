@@ -1,6 +1,6 @@
-use crate::types::CliResult;
 use crate::client::Client;
 use crate::commands::SubCommand;
+use crate::types::CliResult;
 use clap::Args;
 
 #[derive(Args)]

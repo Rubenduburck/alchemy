@@ -6,7 +6,9 @@ use crate::encode::encoding::TextEncoding;
 include!(concat!(env!("OUT_DIR"), "/compiled_regexes.rs"));
 
 // Public functions for regex operations
-pub fn extract_common<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a str) -> Option<&'a str> {
+pub fn extract_common<'a>(
+    get_regex: fn() -> &'static Regex,
+) -> impl 'a + Fn(&'a str) -> Option<&'a str> {
     move |s: &'a str| {
         extract_all(get_regex)(s)
             .into_iter()
@@ -20,14 +22,18 @@ pub fn extract_common<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a
     }
 }
 
-pub fn extract_first<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a str) -> Option<&'a str> {
+pub fn extract_first<'a>(
+    get_regex: fn() -> &'static Regex,
+) -> impl 'a + Fn(&'a str) -> Option<&'a str> {
     move |s: &'a str| {
         let regex = get_regex();
         regex.find(s).map(|m| m.as_str())
     }
 }
 
-pub fn extract_longest<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a str) -> Option<&'a str> {
+pub fn extract_longest<'a>(
+    get_regex: fn() -> &'static Regex,
+) -> impl 'a + Fn(&'a str) -> Option<&'a str> {
     move |s: &'a str| {
         get_regex()
             .find_iter(s)
@@ -37,12 +43,7 @@ pub fn extract_longest<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'
 }
 
 pub fn extract_all<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a str) -> Vec<&'a str> {
-    move |s: &'a str| {
-        get_regex()
-            .find_iter(s)
-            .map(|m| m.as_str())
-            .collect()
-    }
+    move |s: &'a str| get_regex().find_iter(s).map(|m| m.as_str()).collect()
 }
 
 pub fn match_count<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a str) -> usize {
@@ -50,12 +51,7 @@ pub fn match_count<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a st
 }
 
 pub fn match_length<'a>(get_regex: fn() -> &'static Regex) -> impl 'a + Fn(&'a str) -> usize {
-    move |s: &'a str| {
-        get_regex()
-            .find_iter(s)
-            .map(|m| m.len())
-            .sum()
-    }
+    move |s: &'a str| get_regex().find_iter(s).map(|m| m.len()).sum()
 }
 
 pub fn match_base(base: i32) -> impl Fn(&str) -> usize {

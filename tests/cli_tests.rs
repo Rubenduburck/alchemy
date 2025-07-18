@@ -6,27 +6,35 @@ fn test_classify_hex() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
     let assert = cmd.arg("--list").arg("classify").arg("0x1234").assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     let json: Value = serde_json::from_str(&output).unwrap();
-    
+
     // Should classify as hex among others
     let classifications = json.as_array().unwrap();
-    assert!(classifications.iter().any(|v| v["encoding"].as_str() == Some("hex")));
+    assert!(classifications
+        .iter()
+        .any(|v| v["encoding"].as_str() == Some("hex")));
 }
 
 #[test]
 fn test_classify_base64() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd.arg("--list").arg("classify").arg("SGVsbG8gV29ybGQ=").assert();
+    let assert = cmd
+        .arg("--list")
+        .arg("classify")
+        .arg("SGVsbG8gV29ybGQ=")
+        .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     let json: Value = serde_json::from_str(&output).unwrap();
-    
+
     // Should include base64 classification
     let classifications = json.as_array().unwrap();
-    assert!(classifications.iter().any(|v| v["encoding"].as_str().unwrap().contains("base64")));
+    assert!(classifications
+        .iter()
+        .any(|v| v["encoding"].as_str().unwrap().contains("base64")));
 }
 
 #[test]
@@ -36,7 +44,7 @@ fn test_convert_with_input_encoding() {
         .args(["convert", "-i", "hex", "-o", "base64", "0x1234"])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Without --list, should return just the converted string
     assert_eq!(output.trim(), "EjQ");
@@ -45,11 +53,9 @@ fn test_convert_with_input_encoding() {
 #[test]
 fn test_convert_without_input_encoding_auto_classify() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["convert", "-o", "base64", "0x1234"])
-        .assert();
+    let assert = cmd.args(["convert", "-o", "base64", "0x1234"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Without --list, should return just the best conversion
     assert_eq!(output.trim(), "EjQ");
@@ -59,13 +65,21 @@ fn test_convert_without_input_encoding_auto_classify() {
 fn test_convert_multiple_outputs() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
     let assert = cmd
-        .args(["--list", "convert", "-i", "hex", "-o", "base64,int,bin", "0xff"])
+        .args([
+            "--list",
+            "convert",
+            "-i",
+            "hex",
+            "-o",
+            "base64,int,bin",
+            "0xff",
+        ])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     let json: Value = serde_json::from_str(&output).unwrap();
-    
+
     let hex_conversions = &json["hex"];
     assert!(hex_conversions["base64"].is_object());
     assert!(hex_conversions["int"].is_object());
@@ -75,11 +89,9 @@ fn test_convert_multiple_outputs() {
 #[test]
 fn test_convert_with_auto_classify() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["convert", "-o", "base64", "0x1234"])
-        .assert();
+    let assert = cmd.args(["convert", "-o", "base64", "0x1234"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Without --list, should return just the converted string
     assert_eq!(output.trim(), "EjQ");
@@ -92,7 +104,7 @@ fn test_hash_with_encoding() {
         .args(["hash", "-a", "sha256", "-i", "hex", "0x1234"])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Without --list, should return just the hash
     assert!(output.trim().starts_with("0x"));
@@ -101,11 +113,9 @@ fn test_hash_with_encoding() {
 #[test]
 fn test_flatten_array() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["array", "flatten", "[[1, 2], [3, 4]]"])
-        .assert();
+    let assert = cmd.args(["array", "flatten", "[[1, 2], [3, 4]]"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the flattened array as a string
     assert!(output.trim().starts_with("["));
@@ -118,7 +128,7 @@ fn test_chunk_array() {
         .args(["array", "chunk", "-c", "2", "[1, 2, 3, 4, 5, 6]"])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the chunked array as a string
     assert!(output.trim().starts_with("["));
@@ -131,7 +141,7 @@ fn test_reverse_array() {
         .args(["array", "reverse", "-d", "1", "[1, 2, 3, 4, 5]"])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the reversed array as a string
     assert!(output.trim().starts_with("["));
@@ -144,7 +154,7 @@ fn test_rotate_array() {
         .args(["array", "rotate", "-r", "2", "[1, 2, 3, 4, 5]"])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the rotated array as a string
     assert!(output.trim().starts_with("["));
@@ -153,11 +163,9 @@ fn test_rotate_array() {
 #[test]
 fn test_generate() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["generate", "-e", "hex", "-b", "4"])
-        .assert();
+    let assert = cmd.args(["generate", "-e", "hex", "-b", "4"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the hex string directly
     assert!(output.trim().starts_with("0x"));
@@ -167,11 +175,9 @@ fn test_generate() {
 #[test]
 fn test_random() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["random", "-e", "base64", "-b", "16"])
-        .assert();
+    let assert = cmd.args(["random", "-e", "base64", "-b", "16"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should produce valid base64 directly
     assert!(!output.trim().is_empty());
@@ -180,11 +186,9 @@ fn test_random() {
 #[test]
 fn test_pad_left() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["pad", "-p", "4", "-s", "left", "0x12"])
-        .assert();
+    let assert = cmd.args(["pad", "-p", "4", "-s", "left", "0x12"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the padded string directly
     assert_eq!(output.trim(), "0x00000012");
@@ -193,11 +197,9 @@ fn test_pad_left() {
 #[test]
 fn test_pad_right() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["pad", "-p", "4", "-s", "right", "0x12"])
-        .assert();
+    let assert = cmd.args(["pad", "-p", "4", "-s", "right", "0x12"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the padded string directly
     assert_eq!(output.trim(), "0x12000000");
@@ -206,16 +208,13 @@ fn test_pad_right() {
 #[test]
 fn test_hash_with_auto_classify() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
-    let assert = cmd
-        .args(["hash", "-a", "sha256", "Hello World"])
-        .assert();
+    let assert = cmd.args(["hash", "-a", "sha256", "Hello World"]).assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should return the hash directly
     assert!(output.trim().starts_with("0x"));
 }
-
 
 #[test]
 fn test_convert_base64_to_hex_auto() {
@@ -224,7 +223,7 @@ fn test_convert_base64_to_hex_auto() {
         .args(["convert", "-o", "hex", "SGVsbG8gV29ybGQ="])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
-    
+
     assert.success();
     // Should auto-classify as base64 and convert to hex
     assert_eq!(output.trim(), "0x48656c6c6f20576f726c64");

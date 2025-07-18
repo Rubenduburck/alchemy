@@ -1,9 +1,8 @@
 #![allow(clippy::uninlined_format_args)]
 use crate::commands::SubCommand as _;
 use crate::commands::{
-    array::ArrayCommand, classify::ClassifyCommand,
-    convert::ConvertCommand, generate::GenerateCommand,
-    hash::HashCommand, pad::Pad, random::Random,
+    array::ArrayCommand, classify::ClassifyCommand, convert::ConvertCommand,
+    generate::GenerateCommand, hash::HashCommand, pad::Pad, random::Random,
 };
 use crate::types::CliResult;
 use clap::{Parser, Subcommand};
@@ -53,4 +52,3 @@ pub enum Commands {
     /// Hash data (auto-classifies if input encoding not specified)
     Hash(HashCommand),
 }
-

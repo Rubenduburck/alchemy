@@ -235,7 +235,7 @@ impl Decoded {
                 result.extend(std::iter::repeat_n(Decoded::Bytes(vec![0]), padding_needed));
                 result.extend_from_slice(a);
                 Self::Array(result)
-            },
+            }
             Self::Bytes(b) => {
                 let len = b.len();
                 if padding <= len {
@@ -246,7 +246,7 @@ impl Decoded {
                 result.extend(std::iter::repeat_n(0, padding_needed));
                 result.extend_from_slice(b);
                 Self::Bytes(result)
-            },
+            }
         }
     }
 
@@ -262,7 +262,7 @@ impl Decoded {
                 let padding_needed = padding - len;
                 result.extend(std::iter::repeat_n(Decoded::Bytes(vec![0]), padding_needed));
                 Self::Array(result)
-            },
+            }
             Self::Bytes(b) => {
                 let len = b.len();
                 if padding <= len {
@@ -273,15 +273,22 @@ impl Decoded {
                 let padding_needed = padding - len;
                 result.extend(std::iter::repeat_n(0, padding_needed));
                 Self::Bytes(result)
-            },
+            }
         }
     }
 
     pub fn flatten_values(&self) -> Vec<Decoded> {
         match self {
             Self::Array(a) => {
-                let capacity = a.iter()
-                    .map(|x| if let Self::Array(inner) = x { inner.len() } else { 1 })
+                let capacity = a
+                    .iter()
+                    .map(|x| {
+                        if let Self::Array(inner) = x {
+                            inner.len()
+                        } else {
+                            1
+                        }
+                    })
                     .sum();
                 let mut result = Vec::with_capacity(capacity);
                 for x in a {
@@ -291,7 +298,7 @@ impl Decoded {
                     }
                 }
                 result
-            },
+            }
             _ => vec![self.clone()],
         }
     }

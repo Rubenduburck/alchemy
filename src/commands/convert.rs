@@ -1,8 +1,9 @@
-use crate::types::{CliResult, ConversionResult, EncodingWithDecodings};
+#![allow(clippy::uninlined_format_args)]
 use crate::client::Client;
 use crate::commands::SubCommand;
 use crate::encode::encoding::Encoding;
 use crate::error::Error;
+use crate::types::{CliResult, ConversionResult, EncodingWithDecodings};
 use clap::Args;
 use std::collections::HashMap;
 use std::io::{self, Read};
@@ -27,12 +28,14 @@ impl SubCommand for ConvertCommand {
             let mut buffer = String::new();
             match io::stdin().read_to_string(&mut buffer) {
                 Ok(_) => buffer.trim().to_string(),
-                Err(e) => return Error::Generic(format!("Failed to read from stdin: {}", e)).into(),
+                Err(e) => {
+                    return Error::Generic(format!("Failed to read from stdin: {}", e)).into()
+                }
             }
         } else {
             self.input.join(" ")
         };
-        
+
         if input.is_empty() {
             return Error::MissingArgs("input".to_string()).into();
         }
@@ -147,4 +150,3 @@ impl SubCommand for ConvertCommand {
         }
     }
 }
-

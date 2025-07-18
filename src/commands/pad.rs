@@ -1,7 +1,7 @@
-use crate::types::CliResult;
 use crate::client::Client;
 use crate::commands::SubCommand;
 use crate::error::Error;
+use crate::types::CliResult;
 use clap::Args;
 
 #[derive(clap::ValueEnum, Clone, Debug)]
@@ -35,6 +35,7 @@ impl SubCommand for Pad {
         match self.side {
             Side::Left => client.pad_left(self.padding as usize, &input),
             Side::Right => client.pad_right(self.padding as usize, &input),
-        }.into()
+        }
+        .into()
     }
 }

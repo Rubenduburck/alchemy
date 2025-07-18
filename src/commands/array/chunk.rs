@@ -1,7 +1,7 @@
-use crate::types::CliResult;
 use crate::client::Client;
 use crate::commands::SubCommand;
 use crate::error::Error;
+use crate::types::CliResult;
 use clap::Args;
 
 #[derive(Args)]

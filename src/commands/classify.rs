@@ -1,7 +1,7 @@
-use crate::types::{ClassificationResult, CliResult};
 use crate::client::Client;
 use crate::commands::SubCommand;
 use crate::error::Error;
+use crate::types::{ClassificationResult, CliResult};
 use clap::Args;
 
 #[derive(Args)]
@@ -38,4 +38,3 @@ impl SubCommand for ClassifyCommand {
         }
     }
 }
-

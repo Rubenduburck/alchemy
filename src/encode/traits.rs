@@ -6,7 +6,7 @@ use std::fmt::Display;
 pub trait Encoder: Display + Send + Sync {
     /// Encode the decoded input into a string representation
     fn encode(&self, input: &Decoded) -> Result<String, Error>;
-    
+
     /// Get the name of this encoding
     fn name(&self) -> &str;
 }
@@ -21,7 +21,7 @@ pub trait PaddableEncoder: Encoder {
 pub trait Decoder: Send + Sync {
     /// Decode a string input into the Decoded type
     fn decode(&self, input: &str) -> Result<Decoded, Error>;
-    
+
     /// Check if the input can be decoded by this decoder
     fn can_decode(&self, input: &str) -> bool;
 }
@@ -30,7 +30,7 @@ pub trait Decoder: Send + Sync {
 pub trait EncodingSpec: Sized {
     /// Parse a specification string into an encoding instance
     fn from_spec(spec: &str) -> Result<Self, Error>;
-    
+
     /// Convert this encoding to a specification string
     fn to_spec(&self) -> String;
 }
@@ -45,7 +45,7 @@ pub trait ComposableEncoding: Encoder {
 pub trait TransformableEncoding {
     /// Flatten nested structures
     fn flatten(&self) -> Self;
-    
+
     /// Convert to a line-based representation
     fn to_lines(&self) -> Self;
 }
