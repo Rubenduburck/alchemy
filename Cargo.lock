@@ -21,6 +21,7 @@ dependencies = [
  "bs58",
  "clap",
  "criterion",
+ "gmp-mpfr-sys",
  "predicates",
  "rand",
  "regex",

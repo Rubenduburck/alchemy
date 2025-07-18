@@ -46,6 +46,7 @@ jobs:
     needs: check-version
     if: needs.check-version.outputs.version_changed == 'true'
     strategy:
+      fail-fast: false
       matrix:
         include:
           # Linux
@@ -90,6 +91,19 @@ jobs:
         sudo apt-get install -y libc6-dev-arm64-cross
         # Install m4 which is required for GMP compilation
         sudo apt-get install -y m4
+        # Add ARM64 architecture and configure sources for cross-compilation
+        sudo dpkg --add-architecture arm64
+        # Create a clean sources.list.d file for ARM64 packages
+        cat << EOF | sudo tee /etc/apt/sources.list.d/arm64-cross.list
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble main universe
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-updates main universe
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-security main universe
+EOF
+        # Disable ARM64 for existing sources to avoid conflicts
+        sudo sed -i 's/^deb /deb [arch=amd64] /' /etc/apt/sources.list
+        sudo apt-get update
+        # Install ARM64 versions of GMP/MPFR libraries
+        sudo apt-get install -y libgmp-dev:arm64 libmpfr-dev:arm64 libmpc-dev:arm64
     
     - name: Configure cross-compilation
       if: matrix.target == 'aarch64-unknown-linux-gnu'
@@ -107,6 +121,9 @@ jobs:
         echo "CC=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
         echo "AR=aarch64-linux-gnu-ar" >> $GITHUB_ENV
         echo "HOST=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
+        # Set library paths for cross-compilation
+        echo "PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig" >> $GITHUB_ENV
+        echo "PKG_CONFIG_ALLOW_CROSS=1" >> $GITHUB_ENV
     
     - name: Build
       run: |
