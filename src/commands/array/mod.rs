@@ -6,11 +6,13 @@ pub mod chunk;
 pub mod flatten;
 pub mod reverse;
 pub mod rotate;
+pub mod truncate;
 
 use chunk::ChunkCommand;
 use flatten::FlattenCommand;
 use reverse::ReverseCommand;
 use rotate::RotateCommand;
+use truncate::TruncateCommand;
 
 #[derive(Args)]
 pub struct ArrayCommand {
@@ -28,6 +30,8 @@ pub enum ArrayCommands {
     Reverse(ReverseCommand),
     /// Rotate an array left or right
     Rotate(RotateCommand),
+    /// Truncate an array from little end (default) or big end
+    Truncate(TruncateCommand),
 }
 
 impl SubCommand for ArrayCommand {
@@ -37,6 +41,7 @@ impl SubCommand for ArrayCommand {
             ArrayCommands::Chunk(cmd) => cmd.run(list_mode),
             ArrayCommands::Reverse(cmd) => cmd.run(list_mode),
             ArrayCommands::Rotate(cmd) => cmd.run(list_mode),
+            ArrayCommands::Truncate(cmd) => cmd.run(list_mode),
         }
     }
 }

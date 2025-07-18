@@ -161,6 +161,48 @@ fn test_rotate_array() {
 }
 
 #[test]
+fn test_truncate_array_little_end() {
+    let mut cmd = Command::cargo_bin("alchemy").unwrap();
+    let assert = cmd
+        .args(["array", "truncate", "--length", "2", "0x12345678"])
+        .assert();
+    let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
+
+    assert.success();
+    // Should truncate from little end (default) and return 0x1234
+    assert_eq!(output.trim(), "0x1234");
+}
+
+#[test]
+fn test_truncate_array_big_end() {
+    let mut cmd = Command::cargo_bin("alchemy").unwrap();
+    let assert = cmd
+        .args(["array", "truncate", "--length", "2", "--big-end", "0x12345678"])
+        .assert();
+    let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
+
+    assert.success();
+    // Should truncate from big end and return 0x5678
+    assert_eq!(output.trim(), "0x5678");
+}
+
+#[test]
+fn test_truncate_array_elements() {
+    let mut cmd = Command::cargo_bin("alchemy").unwrap();
+    let assert = cmd
+        .args(["array", "truncate", "--length", "3", "[0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC]"])
+        .assert();
+    let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
+
+    assert.success();
+    // Should truncate array from little end and return last 3 elements
+    assert!(output.trim().starts_with("["));
+    assert!(output.trim().contains("0x78"));
+    assert!(output.trim().contains("0x9a"));
+    assert!(output.trim().contains("0xbc"));
+}
+
+#[test]
 fn test_generate() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
     let assert = cmd.args(["generate", "-e", "hex", "-b", "4"]).assert();
