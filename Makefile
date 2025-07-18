@@ -26,7 +26,7 @@ else
 endif
 
 # GitHub repository and release settings
-REPO := Rubenduburck/vim-alchemy
+REPO := rubenduburck/alchemy
 BINARY_NAME := alchemy-$(RELEASE_ARCH)-$(RELEASE_OS)$(BINARY_EXT)
 BIN_DIR := $(shell pwd)/bin
 INSTALLED_BINARY := $(BIN_DIR)/alchemy$(BINARY_EXT)
