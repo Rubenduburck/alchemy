@@ -11,7 +11,6 @@ pub enum Hasher {
     Sha3(usize),
     Keccak(usize),
     Blake2(usize),
-    Md5,
 }
 
 impl Hasher {
@@ -46,10 +45,6 @@ impl Hasher {
             Self::Blake2(256)
         }
     }
-
-    pub fn md5() -> Self {
-        Self::Md5
-    }
 }
 
 impl std::fmt::Display for Hasher {
@@ -59,7 +54,6 @@ impl std::fmt::Display for Hasher {
             Hasher::Sha3(bits) => write!(f, "sha3-{}", bits),
             Hasher::Keccak(bits) => write!(f, "keccak-{}", bits),
             Hasher::Blake2(bits) => write!(f, "blake2-{}", bits),
-            Hasher::Md5 => write!(f, "md5"),
         }
     }
 }
@@ -97,8 +91,6 @@ impl TryFrom<&str> for Hasher {
             Ok(Self::sha3(extract_bits(rest)))
         } else if let Some(rest) = s.strip_prefix(Self::SHA) {
             Ok(Self::sha2(extract_bits(rest)))
-        } else if s == "md5" {
-            Ok(Self::md5())
         } else {
             Err(Error::UnsupportedHash)
         }
@@ -139,7 +131,6 @@ impl Hasher {
                 512 => Ok(Box::new(blake2::Blake2b512::new())),
                 _ => Err(Error::UnsupportedHash),
             },
-            Self::Md5 => todo!(),
         }
     }
 
