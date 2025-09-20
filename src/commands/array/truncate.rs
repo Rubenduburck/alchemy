@@ -38,6 +38,8 @@ impl SubCommand for TruncateCommand {
             return Error::MissingArgs("No input provided".to_string()).into();
         }
         let client = Client::new();
-        client.truncate_array(&input, self.length, self.big_end).into()
+        client
+            .truncate_array(&input, self.length, self.big_end)
+            .into()
     }
 }

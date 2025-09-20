@@ -144,7 +144,12 @@ impl Client {
         Ok(best.encoding().encode(&rotated, pad)?)
     }
 
-    pub fn truncate_array(&self, input: &str, length: usize, big_end: bool) -> Result<String, Error> {
+    pub fn truncate_array(
+        &self,
+        input: &str,
+        length: usize,
+        big_end: bool,
+    ) -> Result<String, Error> {
         let pad = Some(false);
         let best = self.classify_best_match(input);
         let decoded = Decoded::from(&best);
@@ -362,31 +367,43 @@ mod tests {
     #[test]
     fn test_truncate_array() {
         let client = Client::new();
-        
+
         // Test truncating hex from little end (default) - should return 0x1234 per user requirement
         let test_hex = "0x12345678";
-        let truncated_le = client.truncate_array(test_hex, 2, false).expect("Failed to truncate");
+        let truncated_le = client
+            .truncate_array(test_hex, 2, false)
+            .expect("Failed to truncate");
         assert_eq!(truncated_le, "0x1234");
-        
+
         // Test truncating hex from big end - should return 0x5678 per user requirement
-        let truncated_be = client.truncate_array(test_hex, 2, true).expect("Failed to truncate");
+        let truncated_be = client
+            .truncate_array(test_hex, 2, true)
+            .expect("Failed to truncate");
         assert_eq!(truncated_be, "0x5678");
-        
+
         // Test truncating array from little end (default)
         let test_array = "[0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC]";
-        let truncated_le = client.truncate_array(test_array, 3, false).expect("Failed to truncate");
+        let truncated_le = client
+            .truncate_array(test_array, 3, false)
+            .expect("Failed to truncate");
         assert_eq!(truncated_le, "[0x78, 0x9a, 0xbc]");
-        
+
         // Test truncating array from big end
-        let truncated_be = client.truncate_array(test_array, 3, true).expect("Failed to truncate");
+        let truncated_be = client
+            .truncate_array(test_array, 3, true)
+            .expect("Failed to truncate");
         assert_eq!(truncated_be, "[0x12, 0x34, 0x56]");
-        
+
         // Test truncating longer hex value
         let test_long = "0x123456789ABCDEF0";
-        let truncated_le = client.truncate_array(test_long, 4, false).expect("Failed to truncate");
+        let truncated_le = client
+            .truncate_array(test_long, 4, false)
+            .expect("Failed to truncate");
         assert_eq!(truncated_le, "0x12345678");
-        
-        let truncated_be = client.truncate_array(test_long, 4, true).expect("Failed to truncate");
+
+        let truncated_be = client
+            .truncate_array(test_long, 4, true)
+            .expect("Failed to truncate");
         assert_eq!(truncated_be, "0x9abcdef0");
     }
 

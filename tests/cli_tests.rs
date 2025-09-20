@@ -177,7 +177,14 @@ fn test_truncate_array_little_end() {
 fn test_truncate_array_big_end() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
     let assert = cmd
-        .args(["array", "truncate", "--length", "2", "--big-end", "0x12345678"])
+        .args([
+            "array",
+            "truncate",
+            "--length",
+            "2",
+            "--big-end",
+            "0x12345678",
+        ])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
 
@@ -190,7 +197,13 @@ fn test_truncate_array_big_end() {
 fn test_truncate_array_elements() {
     let mut cmd = Command::cargo_bin("alchemy").unwrap();
     let assert = cmd
-        .args(["array", "truncate", "--length", "3", "[0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC]"])
+        .args([
+            "array",
+            "truncate",
+            "--length",
+            "3",
+            "[0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC]",
+        ])
         .assert();
     let output = String::from_utf8(assert.get_output().stdout.clone()).unwrap();
 

@@ -188,7 +188,7 @@ impl<'a> Array<'a> {
         self.separator.is_newline() && self.brackets.is_none()
     }
 
-    pub fn collapse(&self) -> Vec<&Classification> {
+    pub fn collapse(&self) -> Vec<&Classification<'_>> {
         self.values
             .iter()
             .map(|classifications| {
@@ -202,12 +202,12 @@ impl<'a> Array<'a> {
 
     // Turn array classification into array of arrayclassifications with one classification
     // Only if the classification occurs in every column
-    pub fn transpose(&self) -> Vec<Classification> {
+    pub fn transpose(&self) -> Vec<Classification<'_>> {
         // TODO: add this for better array classification
         todo!()
     }
 
-    pub fn values(&self) -> &Vec<Vec<Classification>> {
+    pub fn values(&self) -> &Vec<Vec<Classification<'_>>> {
         &self.values
     }
 
